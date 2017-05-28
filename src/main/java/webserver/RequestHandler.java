@@ -27,12 +27,15 @@ public class RequestHandler extends Thread {
 				connection.getPort());
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-			String requestUrl = HttpRequestUtils.parseRequestUrl(in);
-
+			String requestUrl = HttpRequestUtils.parseRequestUrl(in); 
 			DataOutputStream dos = new DataOutputStream(out);
 
-			byte[] body = Files.readAllBytes(new File("./webapp" + requestUrl).toPath()); // "Hello
-																							// World".getBytes();
+			byte[] body = "Hello".getBytes(); // Files.readAllBytes(new
+												// File("./webapp" +
+												// requestUrl).toPath());
+
+//			byte[] body = Files.readAllBytes(new File("./webapp" + requestUrl).toPath());
+			
 			response200Header(dos, body.length);
 			responseBody(dos, body);
 		} catch (IOException e) {
