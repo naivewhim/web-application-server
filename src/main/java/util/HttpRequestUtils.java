@@ -11,10 +11,30 @@ import java.util.stream.Collectors;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
+import model.User;
+
 public class HttpRequestUtils {
 	public static String parseRequestUrl(InputStream is) throws IOException {
+		String requestUrl = null;
+		User user = null;
+		
+		String requestStr = null;
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		return br.readLine().split(" ")[1];
+		requestStr = br.readLine().split(" ")[1];
+
+		if (requestStr.contains("?")) {
+			requestUrl = requestStr.substring(0, requestStr.indexOf("?"));
+		}
+
+		if (requestUrl.equals("/user/create")) {
+			String queryString = requestStr.substring(requestStr.indexOf("?") + 1);
+			Map<String, String> params = parseQueryString(queryString);
+
+			user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+		}
+		
+		return requestUrl;
 	}
 
 	/**
