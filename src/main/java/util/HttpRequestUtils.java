@@ -1,9 +1,11 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +14,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import db.DataBase;
+import model.HttpRequest;
+import model.HttpResponse;
 import model.User;
 
 public class HttpRequestUtils {
@@ -33,27 +37,19 @@ public class HttpRequestUtils {
 		return result;
 	}
 
-	// Content-Length
-	public static String parseRequestUrl(InputStream is) throws IOException {
-		String requestUrl = null;
-		User user = null;
-		String queryString = null;
-		String requestStr = null;
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	public static HttpRequest parseHttpRequest(InputStream in) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String[] firstLineComponent = br.readLine().split(" ");
+		String httpMethod = firstLineComponent[0];
+		String requestUrl = firstLineComponent[1];
+		String queryString = null;
 
-		requestStr = firstLineComponent[1];
-		if (firstLineComponent[0].equals("GET")) {
-			if (requestStr.contains("?")) {
-				requestUrl = requestStr.substring(0, requestStr.indexOf("?"));
-			} else {
-				requestUrl = requestStr;
+		if (httpMethod.equals("GET")) {
+			if (requestUrl.contains("?")) {
+				requestUrl = requestUrl.split("[?]")[0];
+				queryString = requestUrl.split("[?]")[1];
 			}
-			queryString = requestStr.substring(requestStr.indexOf("?") + 1);
 		} else {
-			requestUrl = requestStr;
-
 			int contentLength = 0;
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -62,22 +58,14 @@ public class HttpRequestUtils {
 					break;
 				}
 
-				if (line.substring(0, line.indexOf(":")).equals("Content-Length")) {
-					contentLength = Integer.parseInt(line.substring(line.indexOf(":") + 1).trim());
+				String attributeKey = line.split("[:]")[0].trim();
+				if (attributeKey.equals("Content-Length")) {
+					contentLength = Integer.parseInt(line.split("[:]")[1].trim());
 				}
 			}
 		}
 
-		if (requestUrl.equals("/user/create")) {
-			Map<String, String> params = parseQueryString(queryString);
-			user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-		}
-
-		if (user != null) {
-			DataBase.addUser(user);
-		}
-
-		return requestUrl;
+		return new HttpRequest(httpMethod, requestUrl, parseQueryString(queryString));
 	}
 
 	/**
