@@ -42,8 +42,10 @@ public class HttpRequestUtils {
 		String[] firstLineComponent = br.readLine().split(" ");
 		String httpMethod = firstLineComponent[0];
 		String requestUrl = firstLineComponent[1];
-		String queryString = null;
+		// TODO 초기화를 안하자
+		String queryString = "";
 
+		// TODO : requestUrl 수정하고 있음
 		if (httpMethod.equals("GET")) {
 			if (requestUrl.contains("?")) {
 				requestUrl = requestUrl.split("[?]")[0];
@@ -53,11 +55,14 @@ public class HttpRequestUtils {
 			int contentLength = 0;
 			String line;
 			while ((line = br.readLine()) != null) {
+				// TODO : "" 를 앞으로
+				// TODO : 얘를 반복문 밖으로
 				if (line.equals("")) {
 					queryString = IOUtils.readData(br, contentLength);
 					break;
 				}
 
+				// TODO : array 배열로 빼기
 				String attributeKey = line.split("[:]")[0].trim();
 				if (attributeKey.equals("Content-Length")) {
 					contentLength = Integer.parseInt(line.split("[:]")[1].trim());
@@ -65,6 +70,7 @@ public class HttpRequestUtils {
 			}
 		}
 
+		// TODO : 모델명 바꾸기
 		return new HttpRequest(httpMethod, requestUrl, parseQueryString(queryString));
 	}
 

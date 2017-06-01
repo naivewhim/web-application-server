@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import db.DataBase;
+import model.Cookie;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.User;
@@ -46,38 +47,101 @@ public class RequestHandler extends Thread {
 		HttpRequest httpRequest = HttpRequestUtils.parseHttpRequest(in);
 		HttpResponse httpResponse = HttpResponseUtil.parseHttpResponse(out);
 
+		String requestUrl = httpRequest.getRequestUrl();
+		if (requestUrl.equals("/index.html") && httpRequest.getHttpMethod().equals("GET")) {
+			httpResponse.setLocation("/index.html");
+
+			goView(httpResponse, httpRequest, null);
+		}
+
+
+		if (httpRequest.getRequestUrl().equals("/user/form.html") && httpRequest.getHttpMethod().equals("GET")) {
+			httpResponse.setLocation("/user/form.html");
+
+			goView(httpResponse, httpRequest, null);
+		}
+
 		if (httpRequest.getRequestUrl().equals("/user/create")) {
 			Map<String, String> params = httpRequest.getParams();
 			// TODO : util
 			User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
 			DataBase.addUser(user);
 			log.debug("[Success addUser] :: userId : {}", user.getUserId());
+
+			goView(httpResponse, httpRequest, null);
 		}
 
-		goView(httpResponse, httpRequest);
+		if (httpRequest.getRequestUrl().equals("/user/login.html") && httpRequest.getHttpMethod().equals("GET")) {
+			httpResponse.setLocation("/user/login.html");
+
+			goView(httpResponse, httpRequest, null);
+		}
+
+		// TODO : 공토변수 뺴기
+		// TODO : else if 로 해야 의미가 분명해짐
+		// TODO : chaining !
+		if (httpRequest.getRequestUrl().equals("/user/login") && httpRequest.getHttpMethod().equals("POST")) {
+			Map<String, String> params = httpRequest.getParams();
+
+			User user = DataBase.findUserById(params.get("userId"));
+			if (user.getPassword().equals(params.get("password"))) {
+				log.debug("[Success login] :: userId : {}", user.getUserId());
+
+				Cookie cookie = new Cookie("logined", "true");
+				goView(httpResponse, httpRequest, cookie);
+			} else {
+				log.debug("[Fail login] :: userId : {}", user.getUserId());
+
+				httpResponse.setLocation("/user/login_failed.html");
+
+				Cookie cookie = new Cookie("logined", "false");
+				goView(httpResponse, httpRequest, cookie);
+			}
+
+		}
+
 	}
 
-	private void goView(HttpResponse httpResponse, HttpRequest httpRequest) throws IOException {
-		DataOutputStream dos = httpResponse.getDos();
-		File view = new File(WEB_DIRECTORY + httpRequest.getRequestUrl());
+	// TODO : 역할분리
+	private void goView(HttpResponse httpResponse, HttpRequest httpRequest, Cookie cookie) throws IOException {
+		if (httpResponse.getLocation() == null) {
+			File view = new File(WEB_DIRECTORY + DEFAULT_URL);
 
-		if (!view.isFile()) {
-			view = new File(WEB_DIRECTORY + DEFAULT_URL);
+			// TODO : if 문 밖으로
 			byte[] body = Files.readAllBytes(view.toPath());
-			response302Header(dos, DEFAULT_URL);
-			responseBody(dos, body);
-		}
+			response302Header(httpResponse.getDos(), DEFAULT_URL);
 
-		byte[] body = Files.readAllBytes(view.toPath());
-		response200Header(dos, body.length);
-		responseBody(dos, body);
+			if(cookie != null) {
+				setCookie(httpResponse.getDos(), cookie);
+			}
+
+			responseLastHeader(httpResponse.getDos());
+			responseBody(httpResponse.getDos(), body);
+		} else {
+			File view = new File(WEB_DIRECTORY + httpResponse.getLocation());
+			byte[] body = Files.readAllBytes(view.toPath());
+			response200Header(httpResponse.getDos(), body.length);
+			if(cookie != null) {
+				setCookie(httpResponse.getDos(), cookie);
+			}
+			responseLastHeader(httpResponse.getDos());
+			responseBody(httpResponse.getDos(), body);
+		}
+	}
+
+	private void setCookie(DataOutputStream dos, Cookie cookie) {
+		try {
+			dos.writeBytes("Set-Cookie: " + cookie.getName() + "=" + cookie.getValue() + "; \r\n");
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
 	}
 
 	private void response302Header(DataOutputStream dos, String location) {
 		try {
 			dos.writeBytes("HTTP/1.1 302 Found \r\n");
 			dos.writeBytes("Location: " + location + "\r\n");
-			dos.writeBytes("\r\n");
+//			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
@@ -88,6 +152,14 @@ public class RequestHandler extends Thread {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+//			dos.writeBytes("\r\n");
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
+	}
+
+	private void responseLastHeader(DataOutputStream dos) {
+		try {
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			log.error(e.getMessage());
