@@ -18,6 +18,7 @@ public class CreateUserController extends AbstractController {
 		Map<String, String> params = request.getParams();
 		User user = new User(params.get("userId"), params.get("password"), params.get("name"),
 				params.get("email"));
+	
 		DataBase.addUser(user);
 
 		log.debug("[Success addUser] :: userId : {}", user.getUserId());
