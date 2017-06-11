@@ -84,4 +84,12 @@ public class HttpRequest {
 	public String getVersion() {
 		return requestLine.getVersion();
 	}
+	
+	public HttpCookie getCookies() {
+		return new HttpCookie(getHeader().get("Cookie"));
+	}
+	
+	public HttpSession getSession() {
+		return HttpSessions.getSession(getCookies().getCookie("JSESSIONID"));
+	}
 }

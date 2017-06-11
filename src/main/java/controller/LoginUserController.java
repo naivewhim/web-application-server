@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import db.DataBase;
 import model.HttpRequest;
 import model.HttpResponse;
+import model.HttpSession;
 import model.User;
 
 public class LoginUserController extends AbstractController {
@@ -26,13 +27,14 @@ public class LoginUserController extends AbstractController {
 		if (user.getPassword() != null && user.getPassword().equals(params.get("password"))) {
 			log.debug("[Success login] :: userId : {}", user.getUserId());
 
-			response.addHeader("Set-Cookie", "logined=true; Path=/ ");
+			// TODO : Set-Cookie: id=a3fWa; Domain=localhost; Path=/; Expires=Wed, 21 Jun 2017 07:28:00 GMT; Secure; HttpOnly
+			HttpSession session = request.getSession();
+			session.setAttribute("user", user);
 			response.sendRedirect(DEFAULT_URL);
 			return;
 		} else {
 			log.debug("[Fail login] :: userId : {}", user.getUserId());
-
-			response.addHeader("Set-Cookie", "logined=false");
+			
 			response.sendRedirect("/user/login_failed.html");
 			return;
 		}

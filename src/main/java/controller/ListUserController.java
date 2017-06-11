@@ -1,42 +1,35 @@
 package controller;
 
-import java.util.Collection;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import db.DataBase;
-import model.HttpRequest;
-import model.HttpResponse;
-import model.User;
-import util.HttpRequestUtil;
 
-public class ListUserController extends AbstractController {
+public class ListUserController implements Controller {
 	private static final Logger log = LoggerFactory.getLogger(ListUserController.class);
-	
+
 	@Override
-	protected void doGet(HttpRequest request, HttpResponse response) {
-		String cookies = request.getHeader().get("Cookie");
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
 
-		Map<String, String> cookieMap = HttpRequestUtil.parseCookies(cookies);
-
-		if ("true".equals(cookieMap.get("logined"))) {
-			StringBuilder sb = new StringBuilder();
-
-			Collection<User> userList = DataBase.findAll();
-			for (User user : userList) {
-				sb.append(user.toString());
-				sb.append("\r\n");
-			}
-
-			response.forwardBody(sb.toString());
-			return;
+		if (isLogined(request.getSession())) {
+			request.setAttribute("users", DataBase.findAll());
+			return "redirect:/users/list.jsp";
 		} else {
 			log.info("user not logined");
-			
-			response.sendRedirect("/user/login.html");
-			return;
+
+			return "/user/login.html";
 		}
+	}
+
+	private static boolean isLogined(HttpSession session) {
+		Object user = session.getAttribute("user");
+		if (user == null) {
+			return false;
+		}
+		return true;
 	}
 }
