@@ -1,11 +1,5 @@
 package util;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,81 +7,12 @@ import java.util.stream.Collectors;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-import db.DataBase;
-import model.HttpRequest;
-import model.HttpResponse;
-import model.User;
+public class HttpRequestUtil {
 
-public class HttpRequestUtils {
-	public static String parseAllRequest(InputStream is) throws IOException {
-		String result = "";
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		String line;
-		while ((line = br.readLine()) != null) {
-			result += line;
-			result += "\n";
-
-			if (line.equals("")) {
-				String queryString = IOUtils.readData(br, 57);
-				break;
-			}
-		}
-
-		return result;
-	}
-
-	public static HttpRequest parseHttpRequest(InputStream in) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		String[] firstLineComponent = br.readLine().split(" ");
-		String httpMethod = firstLineComponent[0];
-		String requestUrl = firstLineComponent[1];
-		// TODO 초기화를 안하자
-		String queryString = "";
-
-		// TODO : requestUrl 수정하고 있음
-		if (httpMethod.equals("GET")) {
-			if (requestUrl.contains("?")) {
-				requestUrl = requestUrl.split("[?]")[0];
-				queryString = requestUrl.split("[?]")[1];
-			}
-		} else {
-			int contentLength = 0;
-			String line;
-			while ((line = br.readLine()) != null) {
-				// TODO : "" 를 앞으로
-				// TODO : 얘를 반복문 밖으로
-				if (line.equals("")) {
-					queryString = IOUtils.readData(br, contentLength);
-					break;
-				}
-
-				// TODO : array 배열로 빼기
-				String attributeKey = line.split("[:]")[0].trim();
-				if (attributeKey.equals("Content-Length")) {
-					contentLength = Integer.parseInt(line.split("[:]")[1].trim());
-				}
-			}
-		}
-
-		// TODO : 모델명 바꾸기
-		return new HttpRequest(httpMethod, requestUrl, parseQueryString(queryString));
-	}
-
-	/**
-	 * @param queryString은
-	 *            URL에서 ? 이후에 전달되는 field1=value1&field2=value2 형식임
-	 * @return
-	 */
 	public static Map<String, String> parseQueryString(String queryString) {
 		return parseValues(queryString, "&");
 	}
 
-	/**
-	 * @param 쿠키
-	 *            값은 name1=value1; name2=value2 형식임
-	 * @return
-	 */
 	public static Map<String, String> parseCookies(String cookies) {
 		return parseValues(cookies, ";");
 	}
