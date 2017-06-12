@@ -1,12 +1,12 @@
 package controller;
 
-import model.HttpRequest;
-import model.HttpResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class ResourceController extends AbstractController {
+public class ResourceController implements Controller {
+
 	@Override
-	protected void doGet(HttpRequest request, HttpResponse response) {
-		response.forward(request.getRequestPath());
-		return;
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
+		return request.getRequestURI();
 	}
 }

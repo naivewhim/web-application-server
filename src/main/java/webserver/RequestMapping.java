@@ -10,16 +10,21 @@ import controller.LoginUserController;
 import controller.ResourceController;
 
 public class RequestMapping {
-	private static Map<String, Controller> controllerMap = new HashMap<>();
-	
-	static {
+	private Map<String, Controller> controllerMap = new HashMap<>();
+
+	void initMapping() {
 		controllerMap.put("/user/create", new CreateUserController());
 		controllerMap.put("/user/login", new LoginUserController());
 		controllerMap.put("/user/list", new ListUserController());
 	}
-	
-	public static Controller getController(String requestURl) {
+
+	public Controller getController(String requestURl) {
 		Controller controller = controllerMap.get(requestURl);
+
 		return controller == null ? new ResourceController() : controller;
+	}
+
+	void put(String url, Controller controller) {
+		controllerMap.put(url, controller);
 	}
 }

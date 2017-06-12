@@ -1,29 +1,27 @@
 package controller;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import db.DataBase;
-import model.HttpRequest;
-import model.HttpResponse;
 import model.User;
 
-public class CreateUserController extends AbstractController {
+public class CreateUserController implements Controller {
 	private static final Logger log = LoggerFactory.getLogger(CreateUserController.class);
 	
 	@Override
-	protected void doPost(HttpRequest request, HttpResponse response) {
-		Map<String, String> params = request.getParams();
-		User user = new User(params.get("userId"), params.get("password"), params.get("name"),
-				params.get("email"));
-	
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
+
+		User user = new User(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"),
+				request.getParameter("email"));
+
 		DataBase.addUser(user);
 
 		log.debug("[Success addUser] :: userId : {}", user.getUserId());
 
-		response.sendRedirect(DEFAULT_URL);
-		return;
+		return "redirect:" + DEFAULT_URL;
 	}
 }
