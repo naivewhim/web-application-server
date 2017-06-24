@@ -7,56 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import common.jdbc.template.InsertJdbcTemplate;
-import common.jdbc.template.UpdateJdbcTemplate;
+import common.jdbc.template.JdbcTemplate;
 import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDao {
 	public void insert(User user) throws SQLException {
-		InsertJdbcTemplate insertJdbcTemplate = new InsertJdbcTemplate() {
-			@Override
-			public void insert(User user) throws SQLException {
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				
-				try {
-					con = ConnectionManager.getConnection();
-					String sql = createQueryForInsert();
-					pstmt = con.prepareStatement(sql);
-					setValuesForinsert(user, pstmt);
-					
-					pstmt.executeUpdate();
-				} finally {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-
-					if (con != null) {
-						con.close();
-					}
-				}
-			}
-			
-			@Override
-			public String createQueryForInsert() {
-				return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-			}
-			
-			@Override
-			public void setValuesForinsert(User user, PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, user.getUserId());
-				pstmt.setString(2, user.getPassword());
-				pstmt.setString(3, user.getName());
-				pstmt.setString(4, user.getEmail());
-			}
-		};
-		
-		insertJdbcTemplate.insert(user);
-	}
-
-	public void update(User user) throws SQLException {
-		UpdateJdbcTemplate updateJdbcTemplate = new UpdateJdbcTemplate() {
+		JdbcTemplate insertJdbcTemplate = new JdbcTemplate() {
 			@Override
 			public void update(User user) throws SQLException {
 				Connection con = null;
@@ -64,9 +21,9 @@ public class UserDao {
 				
 				try {
 					con = ConnectionManager.getConnection();
-					String sql = createQueryForUpdate();
+					String sql = createQuery();
 					pstmt = con.prepareStatement(sql);
-					setValuesForUpdate(user, pstmt);
+					setValues(user, pstmt);
 					
 					pstmt.executeUpdate();
 				} finally {
@@ -81,12 +38,54 @@ public class UserDao {
 			}
 			
 			@Override
-			public String createQueryForUpdate() {
+			public String createQuery() {
+				return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+			}
+			
+			@Override
+			public void setValues(User user, PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getUserId());
+				pstmt.setString(2, user.getPassword());
+				pstmt.setString(3, user.getName());
+				pstmt.setString(4, user.getEmail());
+			}
+		};
+		
+		insertJdbcTemplate.update(user);
+	}
+
+	public void update(User user) throws SQLException {
+		JdbcTemplate updateJdbcTemplate = new JdbcTemplate() {
+			@Override
+			public void update(User user) throws SQLException {
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				
+				try {
+					con = ConnectionManager.getConnection();
+					String sql = createQuery();
+					pstmt = con.prepareStatement(sql);
+					setValues(user, pstmt);
+					
+					pstmt.executeUpdate();
+				} finally {
+					if (pstmt != null) {
+						pstmt.close();
+					}
+
+					if (con != null) {
+						con.close();
+					}
+				}
+			}
+			
+			@Override
+			public String createQuery() {
 				return "UPDATE USERS SET password=?, name=?, email=? WHERE userid=?";
 			}
 
 			@Override
-			public void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException {
+			public void setValues(User user, PreparedStatement pstmt) throws SQLException {
 				pstmt.setString(1, user.getPassword());
 				pstmt.setString(2, user.getName());
 				pstmt.setString(3, user.getEmail());

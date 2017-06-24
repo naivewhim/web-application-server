@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 import next.model.User;
 
-public interface UpdateJdbcTemplate {
+public interface JdbcTemplate {
 	public void update(User user) throws SQLException;
-	
-	public String createQueryForUpdate();
-	
-	public void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException;
+
+	public String createQuery();
+
+	public void setValues(User user, PreparedStatement pstmt) throws SQLException;
 }
