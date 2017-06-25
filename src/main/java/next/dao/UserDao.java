@@ -79,6 +79,6 @@ public class UserDao {
 		};
 
 		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-		return selectJdbcTemplate.findObject(sql, pstmtSetter, rowMapper);
+		return selectJdbcTemplate.findObject(sql, rowMapper, pstmtSetter);
 	}
 }
