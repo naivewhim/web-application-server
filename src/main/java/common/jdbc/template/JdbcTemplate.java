@@ -7,17 +7,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.jdbc.util.PreparedStatementSetter;
+import common.jdbc.util.RowMapper;
 import core.jdbc.ConnectionManager;
 
-public abstract class JdbcTemplate<T> {
-	public void update(String sql) throws SQLException {
+public class JdbcTemplate<T> {
+	public void update(String sql, PreparedStatementSetter pstmtSetter) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
 		try {
 			con = ConnectionManager.getConnection();
 			pstmt = con.prepareStatement(sql);
-			setValues(pstmt);
+			pstmtSetter.setValues(pstmt);
 
 			pstmt.executeUpdate();
 		} finally {
@@ -31,7 +33,7 @@ public abstract class JdbcTemplate<T> {
 		}
 	}
 
-	public List<T> findAll(String sql) throws SQLException {
+	public List<T> findAll(String sql, RowMapper<T> rowMapper) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -43,7 +45,7 @@ public abstract class JdbcTemplate<T> {
 
 			List<T> resultList = new ArrayList<T>();
 			while (rs.next()) {
-				resultList.add(mapRow(rs));
+				resultList.add(rowMapper.mapRow(rs));
 			}
 
 			return resultList;
@@ -60,20 +62,20 @@ public abstract class JdbcTemplate<T> {
 		}
 	}
 
-	public T findObject(String sql) throws SQLException {
+	public T findObject(String sql, PreparedStatementSetter pstmtSetter, RowMapper<T> rowMapper) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			con = ConnectionManager.getConnection();
 			pstmt = con.prepareStatement(sql);
-			setValues(pstmt);
+			pstmtSetter.setValues(pstmt);
 
 			rs = pstmt.executeQuery();
 
 			T resultObject = null;
 			if (rs.next()) {
-				resultObject = mapRow(rs);
+				resultObject = rowMapper.mapRow(rs);
 			}
 
 			return resultObject;
@@ -89,8 +91,4 @@ public abstract class JdbcTemplate<T> {
 			}
 		}
 	}
-
-	public abstract T mapRow(ResultSet rs) throws SQLException;
-
-	public abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
