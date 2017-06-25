@@ -13,34 +13,18 @@ import core.jdbc.ConnectionManager;
 
 public class JdbcTemplate<T> {
 	public void update(String sql, PreparedStatementSetter pstmtSetter) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			con = ConnectionManager.getConnection();
-			pstmt = con.prepareStatement(sql);
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmtSetter.setValues(pstmt);
 
 			pstmt.executeUpdate();
-		} finally {
-			if (pstmt != null) {
-				pstmt.close();
-			}
-
-			if (con != null) {
-				con.close();
-			}
 		}
 	}
 
 	public List<T> findAll(String sql, RowMapper<T> rowMapper) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		try {
-			con = ConnectionManager.getConnection();
-			pstmt = con.prepareStatement(sql);
-
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			rs = pstmt.executeQuery();
 
 			List<T> resultList = new ArrayList<T>();
@@ -49,26 +33,13 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultList;
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			if (con != null) {
-				con.close();
-			}
 		}
 	}
 
 	public T findObject(String sql, PreparedStatementSetter pstmtSetter, RowMapper<T> rowMapper) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		try {
-			con = ConnectionManager.getConnection();
-			pstmt = con.prepareStatement(sql);
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmtSetter.setValues(pstmt);
 
 			rs = pstmt.executeQuery();
@@ -79,16 +50,6 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultObject;
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			if (con != null) {
-				con.close();
-			}
 		}
 	}
 }
