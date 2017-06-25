@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.jdbc.template.JdbcTemplate;
-import common.jdbc.template.SelectJdbcTemplate;
 import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDao {
 	public void insert(User user) throws SQLException {
-		JdbcTemplate insertJdbcTemplate = new JdbcTemplate() {
+		JdbcTemplate<User> insertJdbcTemplate = new JdbcTemplate<User>() {
 			@Override
 			public void update(String sql) throws SQLException {
 				Connection con = null;
@@ -44,6 +43,21 @@ public class UserDao {
 				pstmt.setString(3, user.getName());
 				pstmt.setString(4, user.getEmail());
 			}
+
+			@Override
+			public List<User> findAll(String sql) throws SQLException {
+				return null;
+			}
+
+			@Override
+			public User findObject(String sql) throws SQLException {
+				return null;
+			}
+
+			@Override
+			public User mapRow(ResultSet rs) throws SQLException {
+				return null;
+			}
 		};
 
 		String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
@@ -51,7 +65,7 @@ public class UserDao {
 	}
 
 	public void update(User user) throws SQLException {
-		JdbcTemplate updateJdbcTemplate = new JdbcTemplate() {
+		JdbcTemplate<User> updateJdbcTemplate = new JdbcTemplate<User>() {
 			@Override
 			public void update(String sql) throws SQLException {
 				Connection con = null;
@@ -81,6 +95,21 @@ public class UserDao {
 				pstmt.setString(3, user.getEmail());
 				pstmt.setString(4, user.getUserId());
 			}
+
+			@Override
+			public List<User> findAll(String sql) throws SQLException {
+				return null;
+			}
+
+			@Override
+			public User findObject(String sql) throws SQLException {
+				return null;
+			}
+
+			@Override
+			public User mapRow(ResultSet rs) throws SQLException {
+				return null;
+			}
 		};
 
 		String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userid=?";
@@ -88,7 +117,7 @@ public class UserDao {
 	}
 
 	public List<User> findAll() throws SQLException {
-		SelectJdbcTemplate<User> selectJdbcTemplate = new SelectJdbcTemplate<User>() {
+		JdbcTemplate<User> selectJdbcTemplate = new JdbcTemplate<User>() {
 			@Override
 			public List<User> findAll(String sql) throws SQLException {
 				Connection con = null;
@@ -120,10 +149,6 @@ public class UserDao {
 			}
 
 			@Override
-			public void setValules(PreparedStatement pstmt) throws SQLException {
-			}
-
-			@Override
 			public User mapRow(ResultSet rs) throws SQLException {
 				return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
 						rs.getString("email"));
@@ -134,6 +159,14 @@ public class UserDao {
 				return null;
 			}
 
+			@Override
+			public void update(String string) throws SQLException {
+			}
+
+			@Override
+			public void setValues(PreparedStatement pstmt) throws SQLException {
+			}
+
 		};
 
 		String sql = "SELECT userId, password, name, email FROM USERS";
@@ -141,14 +174,9 @@ public class UserDao {
 	}
 
 	public User findByUserId(String userId) throws SQLException {
-		SelectJdbcTemplate<User> selectJdbcTemplate = new SelectJdbcTemplate<User>() {
+		JdbcTemplate<User> selectJdbcTemplate = new JdbcTemplate<User>() {
 			@Override
-			public List<User> findAll(String sql) throws SQLException {
-				return null;
-			}
-
-			@Override
-			public void setValules(PreparedStatement pstmt) throws SQLException {
+			public void setValues(PreparedStatement pstmt) throws SQLException {
 				pstmt.setString(1, userId);
 			}
 
@@ -166,7 +194,7 @@ public class UserDao {
 				try {
 					con = ConnectionManager.getConnection();
 					pstmt = con.prepareStatement(sql);
-					setValules(pstmt);
+					setValues(pstmt);
 
 					rs = pstmt.executeQuery();
 
@@ -189,6 +217,14 @@ public class UserDao {
 				}
 			}
 
+			@Override
+			public void update(String string) throws SQLException {
+			}
+			
+			@Override
+			public List<User> findAll(String sql) throws SQLException {
+				return null;
+			}
 		};
 
 		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
