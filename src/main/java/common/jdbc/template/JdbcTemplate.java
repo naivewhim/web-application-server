@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import next.model.User;
 
 public interface JdbcTemplate {
-	public void update(User user) throws SQLException;
+	public void update(String string) throws SQLException;
 
-	public String createQuery();
-
-	public void setValues(User user, PreparedStatement pstmt) throws SQLException;
+	public void setValues(PreparedStatement pstmt) throws SQLException;
 }
