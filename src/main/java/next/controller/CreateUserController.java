@@ -20,6 +20,10 @@ public class CreateUserController implements Controller {
 		LOGGER.debug("User : {}", user);
 
 		UserDao userDao = new UserDao();
+		if (userDao.findByUserId(user.getUserId()) != null) {
+			return "redirect:/error/existUser";
+		}
+
 		userDao.insert(user);
 
 		return "redirect:/";
