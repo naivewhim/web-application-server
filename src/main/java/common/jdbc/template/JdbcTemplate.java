@@ -7,38 +7,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.jdbc.exception.DataAccessException;
 import common.jdbc.util.PreparedStatementSetter;
 import common.jdbc.util.RowMapper;
 import core.jdbc.ConnectionManager;
 
 public class JdbcTemplate<T> {
-	public void update(String sql, PreparedStatementSetter pstmtSetter) throws SQLException {
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
+	public void update(String sql, PreparedStatementSetter pstmtSetter) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmtSetter.setValues(pstmt);
 
 			pstmt.executeUpdate();
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
-	
-	public void update(String sql, Object... params) throws SQLException {
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
-			
-			for(int i=0; i<params.length; i++) {
+
+	public void update(String sql, Object... params) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+
+			for (int i = 0; i < params.length; i++) {
 				pstmt.setObject(i, params[i]);
 			}
 
 			pstmt.executeUpdate();
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
 
-	public List<T> findAll(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pstmtSetter) throws SQLException {
+	public List<T> findAll(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pstmtSetter) {
 		ResultSet rs = null;
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmtSetter.setValues(pstmt);
-			
+
 			rs = pstmt.executeQuery();
 
 			List<T> resultList = new ArrayList<T>();
@@ -47,18 +49,19 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultList;
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
-	
-	public List<T> findAll(String sql, RowMapper<T> rowMapper, Object... params) throws SQLException {
+
+	public List<T> findAll(String sql, RowMapper<T> rowMapper, Object... params) {
 		ResultSet rs = null;
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
-			
-			for(int i=0; i<params.length; i++) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+
+			for (int i = 0; i < params.length; i++) {
 				pstmt.setObject(i, params[i]);
 			}
-			
+
 			rs = pstmt.executeQuery();
 
 			List<T> resultList = new ArrayList<T>();
@@ -67,13 +70,14 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultList;
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
 
-	public T findObject(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pstmtSetter) throws SQLException {
+	public T findObject(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pstmtSetter) {
 		ResultSet rs = null;
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmtSetter.setValues(pstmt);
 
 			rs = pstmt.executeQuery();
@@ -84,15 +88,16 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultObject;
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
-	
-	public T findObject(String sql, RowMapper<T> rowMapper, Object... params) throws SQLException {
+
+	public T findObject(String sql, RowMapper<T> rowMapper, Object... params) {
 		ResultSet rs = null;
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);) {
-			
-			for(int i=0; i<params.length; i++) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+
+			for (int i = 0; i < params.length; i++) {
 				pstmt.setObject(i, params[i]);
 			}
 
@@ -104,6 +109,8 @@ public class JdbcTemplate<T> {
 			}
 
 			return resultObject;
+		} catch (SQLException exception) {
+			throw new DataAccessException(exception);
 		}
 	}
 }
