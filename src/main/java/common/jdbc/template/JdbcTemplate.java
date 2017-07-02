@@ -13,24 +13,43 @@ import common.jdbc.util.RowMapper;
 import core.jdbc.ConnectionManager;
 
 public class JdbcTemplate<T> {
-	public void update(String sql, PreparedStatementSetter pstmtSetter) {
+	public int update(String sql, PreparedStatementSetter pstmtSetter) {
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
+			int returnKey = 0;
+			
 			pstmtSetter.setValues(pstmt);
 
 			pstmt.executeUpdate();
+
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				returnKey = (int) rs.getLong(1);
+			}
+			rs.close();
+			
+			return returnKey;
 		} catch (SQLException exception) {
 			throw new DataAccessException(exception);
 		}
 	}
 
-	public void update(String sql, Object... params) {
+	public int update(String sql, Object... params) {
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
-
+			int returnKey = 0;
+			
 			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i, params[i]);
+				pstmt.setObject(i + 1, params[i]);
 			}
 
 			pstmt.executeUpdate();
+			
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				returnKey = (int) rs.getLong(1);
+			}
+			rs.close();
+			
+			return returnKey;
 		} catch (SQLException exception) {
 			throw new DataAccessException(exception);
 		}
@@ -59,7 +78,7 @@ public class JdbcTemplate<T> {
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 
 			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i, params[i]);
+				pstmt.setObject(i + 1, params[i]);
 			}
 
 			rs = pstmt.executeQuery();
@@ -98,7 +117,7 @@ public class JdbcTemplate<T> {
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql);) {
 
 			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i, params[i]);
+				pstmt.setObject(i+1, params[i]);
 			}
 
 			rs = pstmt.executeQuery();

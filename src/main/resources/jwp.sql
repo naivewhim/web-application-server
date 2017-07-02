@@ -25,6 +25,19 @@ CREATE TABLE QUESTIONS (
 
 DROP TABLE IF EXISTS ANSWERS;
 
+INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
+('testid',
+'testtitle', 
+'testcontents',
+CURRENT_TIMESTAMP());
+
+INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
+('testid',
+'testtitle', 
+'testcontents',
+CURRENT_TIMESTAMP());
+
+
 CREATE TABLE ANSWERS (
 	answerId 			bigint				auto_increment,
 	writer				varchar(30)			NOT NULL,
@@ -34,15 +47,14 @@ CREATE TABLE ANSWERS (
 	PRIMARY KEY         (answerId)
 );
 
-
-INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
-('testid',
-'testtitle', 
+INSERT INTO ANSWERS (writer, contents, createdDate, questionId) VALUES
+('testid', 
 'testcontents',
-CURRENT_TIMESTAMP());
+CURRENT_TIMESTAMP(),
+1);
 
-INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
-('testid',
-'testtitle', 
+INSERT INTO ANSWERS (writer, contents, createdDate, questionId) VALUES
+('testid', 
 'testcontents',
-CURRENT_TIMESTAMP());
+CURRENT_TIMESTAMP(),
+1);

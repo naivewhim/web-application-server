@@ -13,9 +13,7 @@
 	<div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="panel panel-default qna-list">
 			<ul class="list" id="ul_question_list">
-				 
-			
-				
+				<!-- 질문 요약 리스트 --> 
 			</ul>
 			<div class="row">
 				<div class="col-md-3"></div>
@@ -82,7 +80,6 @@ $(function() {
 			alert("error");
 		}
 	});
-  
 });
 </script>
 </body>

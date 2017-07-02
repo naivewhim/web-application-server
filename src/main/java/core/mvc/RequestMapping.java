@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import next.controller.CreateAnswerController;
 import next.controller.CreateUserController;
 import next.controller.HomeController;
 import next.controller.ListUserController;
@@ -36,6 +37,7 @@ public class RequestMapping {
         mappings.put("/question/form", new ForwardController("/question/form.jsp"));
         mappings.put("/question/show", new QuestionDetailController());
         mappings.put("/question/summaries", new QuestionSummariesController());
+        mappings.put("/answer/create", new CreateAnswerController());
         logger.info("Initialized Request Mapping!");
     }
 

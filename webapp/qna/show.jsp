@@ -47,74 +47,50 @@
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                      <div class="qna-comment-slipp-articles">
-
-                          <article class="article" id="answer-1405">
-                              <div class="article-header">
-                                  <div class="article-header-thumb">
-                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                  </div>
-                                  <div class="article-header-text">
-                                      <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          2016-01-12 14:06
-                                      </a>
-                                  </div>
-                              </div>
-                              <div class="article-doc comment-doc">
-                                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                              </div>
-                              <div class="article-util">
-                                  <ul class="article-util-list">
-                                      <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
-                                      </li>
-                                      <li>
-                                          <form class="form-delete" action="/questions/413/answers/1405" method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="link-delete-article">삭제</button>
-                                          </form>
-                                      </li>
-                                  </ul>
-                              </div>
-                          </article>
-                          <article class="article" id="answer-1406">
-                              <div class="article-header">
-                                  <div class="article-header-thumb">
-                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                  </div>
-                                  <div class="article-header-text">
-                                      <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          2016-01-12 14:06
-                                      </a>
-                                  </div>
-                              </div>
-                              <div class="article-doc comment-doc">
-                                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                              </div>
-                              <div class="article-util">
-                                  <ul class="article-util-list">
-                                      <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
-                                      </li>
-                                      <li>
-                                          <form class="form-delete" action="/questions/413/answers/1405" method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="link-delete-article">삭제</button>
-                                          </form>
-                                      </li>
-                                  </ul>
-                              </div>
-                          </article>
-                          <form class="submit-write">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status"></textarea>
-                              </div>
-                              <button class="btn btn-success pull-right" type="button">Post</button>
-                              <div class="clearfix" />
-                          </form>
+                      <div id="div_comment_list" class="qna-comment-slipp-articles">
+						<c:forEach items="${answers}" var="answer">
+		                    <article class="article" id="answer-1405">
+		                              <div class="article-header">
+		                              	<input type=hidden value="${answer.answerId}">
+		                                  <div class="article-header-thumb">
+		                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+		                                  </div>
+		                                  <div class="article-header-text">
+		                                      <a class="article-author-name">${answer.writer}</a>
+		                                      <a class="article-header-time">${answer.createdDate}</a>
+		                                  </div>
+		                              </div>
+		                              <div class="article-doc comment-doc">
+		                                  <p>${answer.contents}</p>
+		                              </div>
+		                              <div class="article-util">
+		                                  <ul class="article-util-list">
+		                                      <li>
+		                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+		                                      </li>
+		                                      <li>
+		                                          <form class="form-delete" action="/questions/413/answers/1405" method="POST">
+		                                              <input type="hidden" name="_method" value="DELETE">
+		                                              <button type="submit" class="link-delete-article">삭제</button>
+		                                          </form>
+		                                      </li>
+		                                  </ul>
+		                              </div>
+		                          </article>
+		                </c:forEach>
                       </div>
+                      <form name="answer" class="submit-write">
+                          	<input type=hidden name="questionId" value="${question.questionId}">
+                          	<div class="form-group col-lg-4" style="padding-top:10px;">
+                          	<input type="text" id="writer" name="writer" 
+                          		value="<c:if test="${not empty sessionScope.user}">${sessionScope.user.userId}</c:if>">
+                         	</div>
+                              <div class="form-group col-lg-12" style="padding:14px;">
+                                  <textarea id="contents" name="contents" class="form-control" placeholder="Update your status"></textarea>
+                              </div>
+                              <button id="btn_submit_answer" class="btn btn-success pull-right" type="button">댓글남기기</button>
+                              <div class="clearfix"></div>
+                          </form>
                   </div>
               </div>
           </div>
@@ -123,5 +99,63 @@
 </div>
 
 <%@ include file="/include/footer.jspf" %>
+<script id="answer" type="text/x-jquery-tmpl"> 
+<article class="article" id="answer-1405">
+<div class="article-header">
+	<input type=hidden value="{{= answerId}}">
+    <div class="article-header-thumb">
+        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+    </div>
+    <div class="article-header-text">
+        <a class="article-author-name">{{= writer}}</a>
+        <a class="article-header-time">{{= createdDate}}</a>
+    </div>
+</div>
+<div class="article-doc comment-doc">
+    <p>{{= contents}}</p>
+</div>
+<div class="article-util">
+    <ul class="article-util-list">
+        <li>
+            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+        </li>
+        <li>
+            <form class="form-delete" action="/questions/413/answers/1405" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="link-delete-article">삭제</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</article>
+</script>
+<script>
+$( "#btn_submit_answer" ).on( "click", function(e) {
+	e.preventDefault();
+	var qeuryString = $("form[name=answer]").serialize();
+	
+	console.log(qeuryString);
+	
+	$.ajax({
+		type: 'post',
+		url: '/answer/create',
+		data: qeuryString,
+		dataType:  'json',
+		success: function(answer) {
+			console.log(answer);
+			
+			$("#answer").tmpl([ {
+				answerId : answer.answerId,
+				writer : answer.writer,
+				createdDate : answer.createdDate,
+				contents : answer.contents
+			} ]).appendTo("#div_comment_list");
+		},
+		error : function(e) {
+			alert("error");
+		}
+	});
+});
+</script>
 </body>
 </html>
