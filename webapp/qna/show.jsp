@@ -126,16 +126,15 @@
 </script>
 <script>
 
-
-$( "#btn_delete_answer" ).on( "click", function(e) {
+$(document).on("click", "#btn_delete_answer", function(e) {
 	var answerId = $(this).closest(".article").attr('id').replace("answer-", "");
 	
 	$.ajax({
 		type: 'post',
 		url: '/answer/delete/' + answerId,
 		dataType:  'json',
-		success: function(answer) {
-			if(answer == "success") {
+		success: function(jsonData) {
+			if(jsonData.successCode == "success") {
 				$("#answer-"+answerId).remove();
 			}
 		},
@@ -145,7 +144,7 @@ $( "#btn_delete_answer" ).on( "click", function(e) {
 	});
 });
 
-$( "#btn_submit_answer" ).on( "click", function(e) {
+$(document).on("click", "#btn_submit_answer", function(e) {
 	e.preventDefault();
 	var qeuryString = $("form[name=answer]").serialize();
 	
@@ -156,8 +155,8 @@ $( "#btn_submit_answer" ).on( "click", function(e) {
 		url: '/answer/create',
 		data: qeuryString,
 		dataType:  'json',
-		success: function(answer) {
-			console.log(answer);
+		success: function(jsonData) {
+			var answer = jsonData.generatedAnswer;
 			
 			$("#answer").tmpl([ {
 				answerId : answer.answerId,

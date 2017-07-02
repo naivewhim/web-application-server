@@ -6,26 +6,27 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.view.ModelAndView;
 
-public class CreateUserController implements Controller {
+public class CreateUserController extends AbstractController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateUserController.class);
 
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) {
+	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		User user = new User(req.getParameter("userId"), req.getParameter("password"), req.getParameter("name"),
 				req.getParameter("email"));
 		LOGGER.debug("User : {}", user);
 
 		UserDao userDao = new UserDao();
 		if (userDao.findByUserId(user.getUserId()) != null) {
-			return "redirect:/error/existUser";
+			return jspView("redirect:/error/existUser");
 		}
 
 		userDao.insert(user);
 
-		return "redirect:/";
+		return jspView("redirect:/");
 	}
 }

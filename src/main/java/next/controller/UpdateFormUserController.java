@@ -3,14 +3,15 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.view.ModelAndView;
 
-public class UpdateFormUserController implements Controller {
+public class UpdateFormUserController extends AbstractController {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) {
+    public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
         String userId = req.getParameter("userId");
         
         UserDao userDao = new UserDao();
@@ -21,6 +22,6 @@ public class UpdateFormUserController implements Controller {
         }
         req.setAttribute("user", user);
         
-        return "/user/updateForm.jsp";
+        return jspView("/user/updateForm.jsp");
     }
 }

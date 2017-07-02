@@ -6,15 +6,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.view.ModelAndView;
 
-public class UpdateUserController implements Controller {
+public class UpdateUserController extends AbstractController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateUserController.class);
 
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) {
+	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		UserDao userDao = new UserDao();
 		User user = userDao.findByUserId(req.getParameter("userId"));
 
@@ -28,6 +29,6 @@ public class UpdateUserController implements Controller {
 
 		userDao.update(updateUser);
 
-		return "redirect:/";
+		return jspView("redirect:/");
 	}
 }

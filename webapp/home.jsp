@@ -66,8 +66,8 @@ $(function() {
 		url : '/question/summaries',
 		type : 'GET',
 		dataType : 'json',
-		success : function(questionSummaries) {
-			$.each(questionSummaries, function(index, questionSummary) {
+		success : function(jsonData) {
+			$.each(jsonData.questionSummaries, function(index, questionSummary) {
 				$("#questionSummary").tmpl([ {
 					questionId : questionSummary.questionId,
 					title : questionSummary.title,

@@ -4,13 +4,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.view.ModelAndView;
 
-public class LoginController implements Controller {
+public class LoginController extends AbstractController {
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) {
+    public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
         String userId = req.getParameter("userId");
         String password = req.getParameter("password");
 
@@ -19,15 +20,16 @@ public class LoginController implements Controller {
         
         if (user == null) {
             req.setAttribute("loginFailed", true);
-            return "/user/login.jsp";
+            return jspView("/user/login.jsp");
         }
+        
         if (user.matchPassword(password)) {
             HttpSession session = req.getSession();
             session.setAttribute(UserSessionUtils.USER_SESSION_KEY, user);
-            return "redirect:/";
+            return jspView("redirect:/");
         } else {
             req.setAttribute("loginFailed", true);
-            return "/user/login.jsp";
+            return jspView("/user/login.jsp");
         }
     }
 }

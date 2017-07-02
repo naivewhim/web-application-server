@@ -3,13 +3,14 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.view.ModelAndView;
 
-public class ProfileController implements Controller {
+public class ProfileController extends AbstractController {
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) {
+    public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
         String userId = req.getParameter("userId");
         
         UserDao userDao = new UserDao();
@@ -20,6 +21,6 @@ public class ProfileController implements Controller {
         }
         req.setAttribute("user", user);
         
-        return "/user/profile.jsp";
+        return jspView("/user/profile.jsp");
     }
 }
