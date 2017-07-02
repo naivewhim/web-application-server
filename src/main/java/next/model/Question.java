@@ -15,6 +15,14 @@ public class Question {
 		this.createdDate = createdDate;
 	}
 	
+	public Question(int questionId, String writer, String title, String contents, String createdDate) {
+		this.questionId = questionId;
+		this.writer = writer;
+		this.title = title;
+		this.contents = contents;
+		this.createdDate = createdDate;
+	}
+	
 	public int getQuestionId() {
 		return questionId;
 	}

@@ -19,7 +19,7 @@
 						<div class="main">
 							<input type=hidden value="${questionSummary.questionId}">
 							<strong class="subject">
-								<a href="/qna/show/${questionSummary.questionId}">${questionSummary.title}</a>
+								<a href="/question/show/${questionSummary.questionId}">${questionSummary.title}</a>
 							</strong>
 							<div class="auth-info">
 								<i class="icon-add-comment"></i>
@@ -52,7 +52,7 @@
 					</ul>
 				</div>
 				<div class="col-md-3 qna-write">
-					<a href="/qna/form" class="btn btn-primary pull-right" role="button">질문하기</a>
+					<a href="/question/form" class="btn btn-primary pull-right" role="button">질문하기</a>
 				</div>
 			</div>
 		</div>

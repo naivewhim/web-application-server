@@ -27,4 +27,17 @@ public class QuestionDao {
 					, rs.getString("createdDate"));
 		});
 	}
+	
+	public Question findByQuestionId(int questionId) {
+		JdbcTemplate<Question> selectJdbcTemplate = new JdbcTemplate<Question>();
+
+		String sql = "SELECT questionId, writer, title, contents, createdDate "
+				 + "FROM QUESTIONS WHERE questionId=?";
+		return selectJdbcTemplate.findObject(sql, (rs) -> {
+			return new Question(rs.getInt("questionId"), rs.getString("writer"), rs.getString("title")
+					, rs.getString("contents"), rs.getString("createdDate"));
+		}, (pstmt) -> {
+			pstmt.setInt(1, questionId);
+		});
+	}
 }

@@ -31,6 +31,11 @@ public class DispatcherServlet extends HttpServlet {
         String requestUri = req.getRequestURI();
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
+        if(requestUri.startsWith("/question/show/")) {
+        	req.setAttribute("pathVariable", requestUri.replace("/question/show/", ""));
+        	requestUri = "/question/show";
+        }
+        
         Controller controller = rm.findController(requestUri);
         try {
             String viewName = controller.execute(req, resp);
