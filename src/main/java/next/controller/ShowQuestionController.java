@@ -8,7 +8,7 @@ import next.dao.AnswerDao;
 import next.dao.QuestionDao;
 import next.view.ModelAndView;
 
-public class QuestionDetailController extends AbstractController {
+public class ShowQuestionController extends AbstractController {
 	@Override
 	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		int questionId = (Integer.parseInt((String) req.getAttribute("pathVariable")));

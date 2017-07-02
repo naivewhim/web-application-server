@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import core.mvc.AbstractController;
 import next.dao.UserDao;
 import next.model.User;
+import next.session.UserSession;
 import next.view.ModelAndView;
 
 public class LoginController extends AbstractController {
@@ -25,7 +26,7 @@ public class LoginController extends AbstractController {
         
         if (user.matchPassword(password)) {
             HttpSession session = req.getSession();
-            session.setAttribute(UserSessionUtils.USER_SESSION_KEY, user);
+            session.setAttribute(UserSession.USER_SESSION_KEY, user);
             return jspView("redirect:/");
         } else {
             req.setAttribute("loginFailed", true);

@@ -10,7 +10,7 @@ import next.dao.QuestionDao;
 import next.model.Question;
 import next.view.ModelAndView;
 
-public class QuestionCreateController extends AbstractController {
+public class CreateQuestionController extends AbstractController {
 	@Override
 	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Question question = new Question(req.getParameter("writer"), req.getParameter("title"),

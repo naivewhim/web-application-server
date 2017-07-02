@@ -7,7 +7,7 @@ import core.mvc.AbstractController;
 import next.dao.QuestionDao;
 import next.view.ModelAndView;
 
-public class QuestionFormController extends AbstractController {
+public class FormQuestionController extends AbstractController {
 	@Override
 	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		String pathVaribale = (String) req.getAttribute("pathVariable");

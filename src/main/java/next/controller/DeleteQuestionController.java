@@ -9,7 +9,7 @@ import core.mvc.AbstractController;
 import next.dao.QuestionDao;
 import next.view.ModelAndView;
 
-public class QuestionDeleteController extends AbstractController {
+public class DeleteQuestionController extends AbstractController {
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	int questionId = (Integer.parseInt((String) req.getAttribute("pathVariable")));

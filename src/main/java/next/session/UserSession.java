@@ -1,10 +1,10 @@
-package next.controller;
+package next.session;
 
 import javax.servlet.http.HttpSession;
 
 import next.model.User;
 
-public class UserSessionUtils {
+public class UserSession {
     public static final String USER_SESSION_KEY = "user";
 
     public static User getUserFromSession(HttpSession session) {

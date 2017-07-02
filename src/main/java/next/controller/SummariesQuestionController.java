@@ -11,7 +11,7 @@ import next.dao.QuestionDao;
 import next.model.Question;
 import next.view.ModelAndView;
 
-public class QuestionSummariesController extends AbstractController {
+public class SummariesQuestionController extends AbstractController {
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	QuestionDao questionDao = new QuestionDao();
