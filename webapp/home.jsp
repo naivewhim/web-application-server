@@ -12,29 +12,8 @@
 <div class="container" id="main">
 	<div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="panel panel-default qna-list">
-			<ul class="list">
-				 <c:forEach items="${questionSummaries}" var="questionSummary">
-                   <li>
-					<div class="wrap">
-						<div class="main">
-							<input type=hidden value="${questionSummary.questionId}">
-							<strong class="subject">
-								<a href="/question/show/${questionSummary.questionId}">${questionSummary.title}</a>
-							</strong>
-							<div class="auth-info">
-								<i class="icon-add-comment"></i>
-								<span class="time">${questionSummary.createdDate}</span>
-								<a href="./user/profile.html" class="author">${questionSummary.writer}</a>
-							</div>
-							<div class="reply" title="댓글">
-								<i class="icon-reply"></i>
-								<span class="point">8</span>
-							</div>
-						</div>
-					</div>
-				</li>
-
-                </c:forEach>
+			<ul class="list" id="ul_question_list">
+				 
 			
 				
 			</ul>
@@ -59,20 +38,20 @@
 	</div>
 </div>
 
-<script id="questionSummaries" type="text/x-jquery-tmpl"> 
-    			
-{{each resultList}}		
-	
+<%@ include file="/include/footer.jspf" %>
+
+<script id="questionSummary" type="text/x-jquery-tmpl"> 
 <li>
-	<div class="wrap">
-		<div class="main">
+					<div class="wrap">
+						<div class="main">
+							<input type=hidden value="{{= questionId}}">
 							<strong class="subject">
-								<a href="./qna/show.html">${title}</a>
+								<a href="/question/show/{{= questionId}}">{{= title}}</a>
 							</strong>
 							<div class="auth-info">
 								<i class="icon-add-comment"></i>
-								<span class="time">2016-01-15 18:47</span>
-								<a href="./user/profile.html" class="author">${writer}</a>
+								<span class="time">{{= createdDate}}</span>
+								<a href="./user/profile.html" class="author">{{= writer}}</a>
 							</div>
 							<div class="reply" title="댓글">
 								<i class="icon-reply"></i>
@@ -81,15 +60,29 @@
 						</div>
 					</div>
 				</li>
-
-		{{/each}}
-
 </script>
-<script src="/js/jquery/jquery.tmpl.min.js"></script>
-<%@ include file="/include/footer.jspf" %>
+
 <script>
 $(function() {
-	  
+	$.ajax({
+		url : '/question/summaries',
+		type : 'GET',
+		dataType : 'json',
+		success : function(questionSummaries) {
+			$.each(questionSummaries, function(index, questionSummary) {
+				$("#questionSummary").tmpl([ {
+					questionId : questionSummary.questionId,
+					title : questionSummary.title,
+					writer : questionSummary.writer,
+					createdDate : questionSummary.createdDate
+				} ]).appendTo("#ul_question_list");
+			})
+		},
+		error : function(e) {
+			alert("error");
+		}
+	});
+  
 });
 </script>
 </body>

@@ -13,6 +13,7 @@ import next.controller.LoginController;
 import next.controller.LogoutController;
 import next.controller.ProfileController;
 import next.controller.QuestionDetailController;
+import next.controller.QuestionSummariesController;
 import next.controller.UpdateFormUserController;
 import next.controller.UpdateUserController;
 
@@ -34,7 +35,7 @@ public class RequestMapping {
         mappings.put("/error/existUser", new ForwardController("/error/existUser.jsp"));
         mappings.put("/question/form", new ForwardController("/question/form.jsp"));
         mappings.put("/question/show", new QuestionDetailController());
-       
+        mappings.put("/question/summaries", new QuestionSummariesController());
         logger.info("Initialized Request Mapping!");
     }
 
