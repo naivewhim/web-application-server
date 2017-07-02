@@ -9,12 +9,11 @@ public class QuestionDao {
 	public void insert(Question question) {
 		JdbcTemplate<Question> insertJdbcTemplate = new JdbcTemplate<Question>();
 
-		String sql = "INSERT INTO QUESTIONS (writer, title, contents, createDate) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES (?, ?, ?, CURRENT_TIMESTAMP())";
 		insertJdbcTemplate.update(sql, (pstmt) -> {
 			pstmt.setString(1, question.getWriter());
 			pstmt.setString(2, question.getTitle());
 			pstmt.setString(3, question.getContents());
-			pstmt.setString(4, question.getCreatedDate());
 		});
 	}
 
@@ -39,5 +38,11 @@ public class QuestionDao {
 		}, (pstmt) -> {
 			pstmt.setInt(1, questionId);
 		});
+	}
+	
+	public void delete(int questionId) {
+		JdbcTemplate<Question> jdbcTemplate = new JdbcTemplate<Question>();
+		String sql = "DELETE FROM QUESTIONS WHERE questionId = ?";
+		jdbcTemplate.update(sql, questionId);
 	}
 }

@@ -7,6 +7,12 @@ public class Question {
 	private String contents;
 	private String createdDate;
 
+	public Question(String writer, String title, String contents) {
+		this.writer = writer;
+		this.title = title;
+		this.contents = contents;
+	}
+	
 	public Question(int questionId, String writer, String title, String createdDate) {
 		this.questionId = questionId;
 		this.writer = writer;
