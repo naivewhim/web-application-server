@@ -46,7 +46,7 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                      <p class="qna-comment-count"><span id="answer-cnt">${answerCount}</span>개의 의견</p>
                       <div id="div_comment_list" class="qna-comment-slipp-articles">
 						<c:forEach items="${answers}" var="answer">
 		                    <article class="article" id="answer-${answer.answerId}">
@@ -136,6 +136,9 @@ $(document).on("click", "#btn_delete_answer", function(e) {
 		success: function(jsonData) {
 			if(jsonData.successCode == "success") {
 				$("#answer-"+answerId).remove();
+				
+				var beforeCnt = $("#answer-cnt").text();
+				$("#answer-cnt").text(Number(beforeCnt) - 1);
 			}
 		},
 		error : function(e) {
@@ -164,6 +167,9 @@ $(document).on("click", "#btn_submit_answer", function(e) {
 				createdDate : answer.createdDate,
 				contents : answer.contents
 			} ]).appendTo("#div_comment_list");
+			
+			var beforeCnt = $("#answer-cnt").text();
+			$("#answer-cnt").text(Number(beforeCnt) + 1);
 		},
 		error : function(e) {
 			alert("error");

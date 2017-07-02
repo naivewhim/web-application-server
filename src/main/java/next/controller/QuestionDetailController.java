@@ -17,6 +17,7 @@ public class QuestionDetailController extends AbstractController {
 		AnswerDao answerDao = new AnswerDao();
 
 		return jspView("/qna/show.jsp").addObject("question", questionDao.findByQuestionId(questionId))
-				.addObject("answers", answerDao.findAnswersByQuestionId(questionId));
+				.addObject("answers", answerDao.findAnswersByQuestionId(questionId))
+				.addObject("answerCount", answerDao.getAnswerCountByQuestionId(questionId));
 	}
 }

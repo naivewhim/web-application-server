@@ -15,6 +15,7 @@ import next.controller.LoginController;
 import next.controller.LogoutController;
 import next.controller.ProfileController;
 import next.controller.QuestionDetailController;
+import next.controller.QuestionFormController;
 import next.controller.QuestionSummariesController;
 import next.controller.UpdateFormUserController;
 import next.controller.UpdateUserController;
@@ -35,7 +36,7 @@ public class RequestMapping {
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
         mappings.put("/error/existUser", new ForwardController("/error/existUser.jsp"));
-        mappings.put("/question/form", new ForwardController("/question/form.jsp"));
+        mappings.put("/question/form", new QuestionFormController());
         mappings.put("/question/show", new QuestionDetailController());
         mappings.put("/question/summaries", new QuestionSummariesController());
         mappings.put("/answer/create", new CreateAnswerController());

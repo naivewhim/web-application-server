@@ -37,6 +37,11 @@ public class DispatcherServlet extends HttpServlet {
         	requestUri = "/question/show";
         }
         
+        if(requestUri.startsWith("/question/form/")) {
+        	req.setAttribute("pathVariable", requestUri.replace("/question/form/", ""));
+        	requestUri = "/question/form";
+        }
+        
         if(requestUri.startsWith("/answer/delete/")) {
         	req.setAttribute("pathVariable", requestUri.replace("/answer/delete/", ""));
         	requestUri = "/answer/delete";

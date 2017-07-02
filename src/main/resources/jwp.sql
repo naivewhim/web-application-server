@@ -31,12 +31,6 @@ INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
 'testcontents',
 CURRENT_TIMESTAMP());
 
-INSERT INTO QUESTIONS (writer, title, contents, createdDate) VALUES
-('testid',
-'testtitle', 
-'testcontents',
-CURRENT_TIMESTAMP());
-
 
 CREATE TABLE ANSWERS (
 	answerId 			bigint				auto_increment,
