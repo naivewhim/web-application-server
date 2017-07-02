@@ -10,19 +10,16 @@ import com.google.gson.Gson;
 
 import core.mvc.Controller;
 import next.dao.AnswerDao;
-import next.model.Answer;
 
-public class CreateAnswerController implements Controller {
+public class DeleteAnswerController implements Controller {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    	Answer answer = new Answer(req.getParameter("writer"), req.getParameter("contents")
-    			, Integer.parseInt(req.getParameter("questionId")));
-        
+    	int answerId = (Integer.parseInt((String) req.getAttribute("pathVariable")));
+    	
         AnswerDao answerDao = new AnswerDao();
-        int answerId = answerDao.insert(answer);
-        Answer generatedAnswer = answerDao.findAnswerByAnswerId(answerId);
+        answerDao.delete(answerId);
         
-    	String json = new Gson().toJson(generatedAnswer);
+    	String json = new Gson().toJson("success");
     	
     	resp.setContentType("application/json;charset=UTF-8");
     	PrintWriter out = resp.getWriter();

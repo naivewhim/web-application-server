@@ -36,6 +36,11 @@ public class DispatcherServlet extends HttpServlet {
         	requestUri = "/question/show";
         }
         
+        if(requestUri.startsWith("/answer/delete/")) {
+        	req.setAttribute("pathVariable", requestUri.replace("/answer/delete/", ""));
+        	requestUri = "/answer/delete";
+        }
+        
         Controller controller = rm.findController(requestUri);
         try {
             String viewName = controller.execute(req, resp);

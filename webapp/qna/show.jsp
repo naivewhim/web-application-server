@@ -49,9 +49,9 @@
                       <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
                       <div id="div_comment_list" class="qna-comment-slipp-articles">
 						<c:forEach items="${answers}" var="answer">
-		                    <article class="article" id="answer-1405">
+		                    <article class="article" id="answer-${answer.answerId}">
 		                              <div class="article-header">
-		                              	<input type=hidden value="${answer.answerId}">
+		                              	<input name="id_answer" type=hidden value="${answer.answerId}">
 		                                  <div class="article-header-thumb">
 		                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
 		                                  </div>
@@ -69,11 +69,8 @@
 		                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
 		                                      </li>
 		                                      <li>
-		                                          <form class="form-delete" action="/questions/413/answers/1405" method="POST">
-		                                              <input type="hidden" name="_method" value="DELETE">
-		                                              <button type="submit" class="link-delete-article">삭제</button>
-		                                          </form>
-		                                      </li>
+									            <button class="link-delete-article" id="btn_delete_answer">삭제</button>
+									        </li>
 		                                  </ul>
 		                              </div>
 		                          </article>
@@ -100,9 +97,10 @@
 
 <%@ include file="/include/footer.jspf" %>
 <script id="answer" type="text/x-jquery-tmpl"> 
-<article class="article" id="answer-1405">
+<article class="article" id="answer-{{= answerId}}">
+<input name="id_answer" type=hidden value="{{= answerId}}">
 <div class="article-header">
-	<input type=hidden value="{{= answerId}}">
+	<input name="id_answer" type=hidden value="{{= answerId}}">
     <div class="article-header-thumb">
         <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
     </div>
@@ -119,17 +117,34 @@
         <li>
             <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
         </li>
-        <li>
-            <form class="form-delete" action="/questions/413/answers/1405" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" class="link-delete-article">삭제</button>
-            </form>
+		<li>
+            <button class="link-delete-article" id="btn_delete_answer">삭제</button>
         </li>
     </ul>
 </div>
 </article>
 </script>
 <script>
+
+
+$( "#btn_delete_answer" ).on( "click", function(e) {
+	var answerId = $(this).closest(".article").attr('id').replace("answer-", "");
+	
+	$.ajax({
+		type: 'post',
+		url: '/answer/delete/' + answerId,
+		dataType:  'json',
+		success: function(answer) {
+			if(answer == "success") {
+				$("#answer-"+answerId).remove();
+			}
+		},
+		error : function(e) {
+			alert("error");
+		}
+	});
+});
+
 $( "#btn_submit_answer" ).on( "click", function(e) {
 	e.preventDefault();
 	var qeuryString = $("form[name=answer]").serialize();

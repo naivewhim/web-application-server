@@ -38,4 +38,10 @@ public class AnswerDao {
 					rs.getString("createdDate"));
 		}, answerId);
 	}
+	
+	public void delete(int answerId) {
+        JdbcTemplate<Answer> jdbcTemplate = new JdbcTemplate<Answer>();
+        String sql = "DELETE FROM ANSWERS WHERE answerId = ?";
+        jdbcTemplate.update(sql, answerId);
+    }
 }
