@@ -31,6 +31,7 @@ public class RequestMapping {
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
         mappings.put("/error/existUser", new ForwardController("/error/existUser.jsp"));
+        mappings.put("/qna/form", new ForwardController("/qna/form.jsp"));
 
         logger.info("Initialized Request Mapping!");
     }
